@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GroArche Learning Solutions – Realizing Potential. Delivering Performance.</title>
+  
+  <!-- Favicon using Official Logo Asset -->
+  <link rel="icon" type="image/jpeg" href="assets/images/groarche-logo.jpeg">
+  
+  <!-- Meta & Technical SEO Tags -->
+  <meta name="description" content="GroArche Learning Solutions is a facilitation-driven human performance consultancy. Turning human potential into meaningful performance through experiential learning, leadership development, soft skills, and career readiness. Founded by Anutosh Ghosh.">
+  <meta name="keywords" content="GroArche Learning Solutions, Facilitation-driven learning, Human performance consultancy, Leadership development, Corporate facilitation, Communication skills, Executive presence, Emotional intelligence, Campus to corporate, Anutosh Ghosh">
+  <meta property="og:title" content="GroArche Learning Solutions – Realizing Potential. Delivering Performance.">
+  <meta property="og:description" content="A facilitation-driven human performance consultancy helping people turn potential into meaningful performance.">
+  <meta property="og:type" content="website">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- Vanilla Tilt CDN for 3D Card Hover Effects -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            heading: ['Plus Jakarta Sans', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #060911;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    
+    #global3dCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .perspective-1000 { perspective: 1000px; }
+    .perspective-2000 { perspective: 2000px; }
+    .preserve-3d { transform-style: preserve-3d; }
+
+    /* Translucent Glass Panels so Background WebGL 3D Animation Shines Through */
+    .glass-panel-3d {
+      background: rgba(11, 15, 25, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.75);
+      transform-style: preserve-3d;
+      transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .glass-panel-3d:hover {
+      background: rgba(15, 23, 42, 0.82);
+      border-color: rgba(212, 175, 55, 0.75);
+      box-shadow: 0 45px 90px -18px rgba(212, 175, 55, 0.35);
+      transform: translateY(-8px) rotateX(4deg) rotateY(-3deg) translateZ(14px);
+    }
+
+    .text-gradient-gold {
+      background: linear-gradient(135deg, #ffffff 0%, #fef08a 40%, #d4af37 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .glow-text-gold { text-shadow: 0 0 30px rgba(212, 175, 55, 0.65); }
+    .glow-gold-3d { box-shadow: 0 0 45px rgba(212, 175, 55, 0.35), 0 0 90px rgba(245, 158, 11, 0.15); }
+
+    /* Fixed Viewport Floating Container Rule */
+    .floating-assistant-container {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 16px;
+      pointer-events: auto;
+    }
+
+    .ai-chat-window {
+      position: fixed;
+      right: 24px;
+      bottom: 120px;
+      z-index: 100000;
+    }
+
+    @media (max-width: 768px) {
+      .floating-assistant-container {
+        right: 16px;
+        bottom: 20px;
+        gap: 12px;
+      }
+      .ai-chat-window {
+        right: 14px;
+        bottom: 100px;
+        width: calc(100vw - 28px);
+      }
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #060911; }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    ::-webkit-scrollbar-thumb:hover { background: #d4af37; }
+  </style>
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "GroArche Learning Solutions",
+    "image": "assets/images/anutosh-ghosh.jpeg",
+    "logo": "assets/images/groarche-logo.jpeg",
+    "description": "Facilitation-driven human performance consultancy delivering experiential learning, leadership development, soft skills, and career readiness.",
+    "founder": {
+      "@type": "Person",
+      "name": "Anutosh Ghosh",
+      "jobTitle": "Founder & Director",
+      "alumniOf": ["Wipro", "Deloitte"],
+      "sameAs": "https://www.linkedin.com/in/anutosh-ghosh-corporate-trainer?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+    },
+    "telephone": "+919836695655",
+    "email": "contact@groarche.pro",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "R/AA-28, Purbapally, Raghunathpur",
+      "addressLocality": "Kolkata",
+      "addressRegion": "West Bengal",
+      "postalCode": "700059",
+      "addressCountry": "IN"
+    }
+  }
+  </script>
+</head>
+<body class="relative min-h-screen selection:bg-amber-400 selection:text-slate-950">
+
+  <!-- ================= SCROLL PROGRESS BAR ================= -->
+  <div class="fixed top-0 left-0 right-0 h-1 bg-amber-500/20 z-50 pointer-events-none">
+    <div id="scrollProgressBar" class="h-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 w-0 transition-all duration-75"></div>
+  </div>
+
+  <!-- ================= 3D WEBGL BACKGROUND CANVAS FIXED TO VIEWPORT ================= -->
+  <canvas id="global3dCanvas"></canvas>
+
+  <!-- ================= STICKY HEADER NAVIGATION ================= -->
+  <header id="siteHeader" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-4 bg-[#060911]/80 backdrop-blur-xl border-b border-amber-500/20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between">
+        
+        <!-- Official Logo Emblem -->
+        <a href="#hero" class="flex items-center gap-3 group">
+          <div class="w-10 h-10 rounded-xl overflow-hidden bg-slate-900 border border-amber-400/40 p-0.5 shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-all flex items-center justify-center">
+            <img src="assets/images/groarche-logo.jpeg" alt="GroArche Logo" class="w-full h-full object-cover rounded-[9px]">
+          </div>
+          <div class="flex flex-col">
+            <span class="text-xl font-extrabold tracking-tight text-white flex items-center gap-1.5 font-heading">
+              GroArche
+              <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            </span>
+            <span class="text-[9px] tracking-widest uppercase font-semibold text-amber-400/90">Learning Solutions</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden xl:flex items-center gap-1 bg-[#0b0f19]/70 p-1.5 rounded-full border border-slate-800 backdrop-blur-md text-xs">
+          <a href="#hero" class="px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">Studio Entrance</a>
+          <a href="#philosophy" class="px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">Philosophy</a>
+          <a href="#challenge" class="px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">Gap</a>
+          <a href="#learning-journeys" class="px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">Services Constellation</a>
+          <a href="#why-groarche" class="px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">Purpose</a>
+          <a href="#groarche-way" class="px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">3D Depth Deck</a>
+          <a href="#facilitation-dna" class="px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">DNA</a>
+          <a href="#who-we-help" class="px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">Pathways</a>
+          <a href="#founder" class="px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">Founder Timeline</a>
+          <a href="#impact" class="px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">Impact</a>
+          <a href="#testimonials" class="px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">Feedback</a>
+          <a href="#gallery" class="px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">Gallery</a>
+          <a href="#media-recognition" class="px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">Recognition</a>
+          <a href="#contact" class="px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">Final Pathway</a>
+        </nav>
+
+        <!-- CTA Button -->
+        <div class="hidden lg:flex items-center gap-3">
+          <button onclick="openLeadGenModal()" class="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-600 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20 hover:scale-105 transition">
+            Explore the GroArche Way
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Section Flow (All Section Backgrounds Set to Transparent) -->
+  <main class="relative z-10">
+
+    <!-- ================= 01. WOW MOMENT 1: FUTURISTIC 3D KINETIC HERO ================= -->
+    <section id="hero" class="min-h-screen pt-32 pb-20 flex items-center relative perspective-2000 bg-transparent">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          <div class="lg:col-span-7 space-y-6">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold">
+              <span>✦ GroArche Learning Studio — Kinetic 3D Entrance</span>
+            </div>
+            
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-[1.08] font-heading">
+              GroArche <br>
+              <span class="text-gradient-gold glow-text-gold">Learning Solutions</span>
+            </h1>
+
+            <div class="text-xl sm:text-2xl font-bold text-amber-400 glow-text-gold">
+              Realizing Potential. Delivering Performance.
+            </div>
+
+            <p class="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
+              A facilitation-driven human performance consultancy helping individuals and teams translate potential into meaningful workplace performance.
+            </p>
+
+            <div class="pt-4 flex flex-wrap gap-4">
+              <button onclick="openLeadGenModal()" class="px-8 py-4 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-600 text-slate-950 font-bold text-sm shadow-xl shadow-amber-500/25 hover:scale-105 transition">
+                Explore the GroArche Way →
+              </button>
+              <a href="#contact" class="px-8 py-4 rounded-full bg-[#0b0f19]/80 text-slate-200 border border-slate-700 hover:border-amber-500/40 font-semibold text-sm transition">
+                Start Your Journey
+              </a>
+            </div>
+          </div>
+
+          <!-- Hero 3D Kinetic Card -->
+          <div class="lg:col-span-5">
+            <div class="glass-panel-3d rounded-3xl p-8 border border-amber-500/40 space-y-4 shadow-2xl glow-gold-3d">
+              <div class="text-xs uppercase font-bold tracking-widest text-amber-400">The Human Growth Motif</div>
+              <h3 class="text-2xl font-bold text-white">Potential → Performance</h3>
+              <p class="text-sm text-slate-300 leading-relaxed">
+                GroArche bridges the gap between technical capability and human behavioral execution through guided reflection and experiential facilitation.
+              </p>
+              <div class="pt-4 border-t border-slate-800 flex justify-between text-xs font-semibold text-amber-400">
+                <span>Awareness • Experience • Action</span>
+                <span>3D Kinetic Studio</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 02. WOW MOMENT 2: SCROLL THROUGH WORDS ("POTENTIAL") ================= -->
+    <section id="philosophy" class="py-24 border-t border-slate-900/60 bg-transparent perspective-2000 overflow-hidden relative">
+      
+      <!-- Big "POTENTIAL" Z-Space Backdrop -->
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+        <div class="text-[14vw] font-black tracking-tighter uppercase text-amber-500/10 font-heading select-none glow-text-gold">
+          POTENTIAL
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 relative z-10">
+        <div class="text-center max-w-3xl mx-auto space-y-4">
+          <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">Brand Promise</span>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-white">Realizing Potential. Delivering Performance.</h2>
+          <p class="text-base sm:text-lg text-slate-300">We believe every individual possesses the potential to succeed. Performance limits occur from lack of awareness, experience, reflection, and application.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-5 gap-4">
+          <div class="glass-panel-3d rounded-2xl p-6 text-center space-y-2">
+            <div class="text-amber-400 font-bold text-xs">01</div>
+            <h4 class="font-bold text-white">Experience</h4>
+            <p class="text-xs text-slate-300">Engage in meaningful activities.</p>
+          </div>
+          <div class="glass-panel-3d rounded-2xl p-6 text-center space-y-2">
+            <div class="text-amber-400 font-bold text-xs">02</div>
+            <h4 class="font-bold text-white">Reflect</h4>
+            <p class="text-xs text-slate-300">Examine actions & discover perspective.</p>
+          </div>
+          <div class="glass-panel-3d rounded-2xl p-6 text-center space-y-2">
+            <div class="text-amber-400 font-bold text-xs">03</div>
+            <h4 class="font-bold text-white">Question</h4>
+            <p class="text-xs text-slate-300">Challenge underlying assumptions.</p>
+          </div>
+          <div class="glass-panel-3d rounded-2xl p-6 text-center space-y-2">
+            <div class="text-amber-400 font-bold text-xs">04</div>
+            <h4 class="font-bold text-white">Collaborate</h4>
+            <p class="text-xs text-slate-300">Harvest collective group wisdom.</p>
+          </div>
+          <div class="glass-panel-3d rounded-2xl p-6 text-center space-y-2">
+            <div class="text-amber-400 font-bold text-xs">05</div>
+            <h4 class="font-bold text-white">Apply</h4>
+            <p class="text-xs text-slate-300">Translate insights into habits.</p>
+          </div>
+        </div>
+
+        <!-- Moment of Reflection Pause Quote -->
+        <div class="max-w-4xl mx-auto glass-panel-3d rounded-3xl p-10 text-center glow-gold-3d">
+          <blockquote class="text-xl sm:text-2xl font-bold text-[#FFFFFF] italic">
+            "Learning is not measured by what is taught. It is measured by what changes."
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 03. THE PERFORMANCE GAP ================= -->
+    <section id="challenge" class="py-24 border-t border-slate-900/60 bg-transparent perspective-2000">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+          <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">The Performance Gap</span>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-white">If potential is already there, what stops performance?</h2>
+          <p class="text-lg text-amber-400">"Technical expertise may open doors. Human skills determine how far people go."</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-4">
+            <div class="text-xs font-bold text-amber-400 font-mono">GAP 01</div>
+            <h3 class="text-xl font-bold text-white">Knowing vs Doing</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">Knowing what to do is rarely the problem. Translating knowledge into consistent action is where most individuals and teams struggle.</p>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-4">
+            <div class="text-xs font-bold text-amber-400 font-mono">GAP 02</div>
+            <h3 class="text-xl font-bold text-white">Technical vs Human Effectiveness</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">Hard skills get people hired, but communication, adaptability, emotional intelligence, and leadership dictate long-term success.</p>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-4">
+            <div class="text-xs font-bold text-amber-400 font-mono">GAP 03</div>
+            <h3 class="text-xl font-bold text-white">Training vs Facilitation</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">Passive lectures create temporary awareness. Experiential facilitation creates active behavioral transformation.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 04. SERVICES 3D LEARNING CONSTELLATION ================= -->
+    <section id="learning-journeys" class="py-24 border-t border-slate-900/60 bg-transparent perspective-2000">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div class="text-center max-w-3xl mx-auto space-y-4">
+          <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">3D Services Ecosystem</span>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-white">Services & Learning <span class="text-gradient-gold">Constellation</span></h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-3 glow-gold-3d">
+            <span class="text-xs font-mono font-bold text-amber-400">01</span>
+            <h3 class="text-xl font-bold text-white">Career Readiness</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">Campus-to-Corporate, Placement Readiness, Interview Readiness, Workplace Communication.</p>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-3 glow-gold-3d">
+            <span class="text-xs font-mono font-bold text-amber-400">02</span>
+            <h3 class="text-xl font-bold text-white">Leadership Effectiveness</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">Leadership Communication, Executive Presence, Emotional Intelligence (EQ).</p>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-3 glow-gold-3d">
+            <span class="text-xs font-mono font-bold text-amber-400">03</span>
+            <h3 class="text-xl font-bold text-white">Customer Satisfaction</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">Customer Service Excellence, Client Communication, De-escalation Strategies.</p>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-3 glow-gold-3d">
+            <span class="text-xs font-mono font-bold text-amber-400">04</span>
+            <h3 class="text-xl font-bold text-white">Team Performance</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">Team Effectiveness, Facilitation Workshops, Cross-Functional Synergy.</p>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-3 glow-gold-3d">
+            <span class="text-xs font-mono font-bold text-amber-400">05</span>
+            <h3 class="text-xl font-bold text-white">Executive Development</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">1-on-1 Executive Mentoring, Career Mentoring, Strategic Leadership Alignment.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 05. WHY GROARCHE EXISTS ================= -->
+    <section id="why-groarche" class="py-24 border-t border-slate-900/60 bg-transparent perspective-2000">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div class="text-center max-w-3xl mx-auto space-y-4">
+          <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">Founding Purpose</span>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-white">Why <span class="text-gradient-gold">GroArche Exists</span></h2>
+        </div>
+
+        <div class="max-w-4xl mx-auto glass-panel-3d rounded-3xl p-8 sm:p-12 space-y-6 glow-gold-3d">
+          <p class="text-base text-slate-300 leading-relaxed">
+            After 16+ years of leading projects, managing global stakeholders, and building teams across organizations like Wipro and Deloitte, one insight became impossible to ignore:
+          </p>
+          <div class="p-6 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold text-lg text-center">
+            "Technical expertise opens doors. Human behavior determines long-term success."
+          </div>
+          <p class="text-sm text-slate-300 leading-relaxed">
+            Whether it's communication, leadership, collaboration, adaptability, or emotional intelligence, working effectively with people consistently separates high performers from the rest. GroArche was founded to bridge this gap through facilitation-driven experiential learning.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 06. METHODOLOGY 3D CARD STACK (THE GROARCHE WAY) ================= -->
+    <section id="groarche-way" class="py-24 border-t border-slate-900/60 bg-transparent perspective-2000">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+          <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">3D Card Depth Deck</span>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-white">The <span class="text-gradient-gold">GroArche Way</span></h2>
+          <p class="text-base text-slate-300">Six facilitation components engineered to transform human capability.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-3 glow-gold-3d">
+            <div class="text-amber-400 font-bold text-xs">01</div>
+            <h3 class="text-xl font-bold text-white">Experiential Activities</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">Learning through active participation rather than passive listening.</p>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-3 glow-gold-3d">
+            <div class="text-amber-400 font-bold text-xs">02</div>
+            <h3 class="text-xl font-bold text-white">Role Plays & Simulations</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">Practicing real-world workplace situations in a safe psychological space.</p>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-3 glow-gold-3d">
+            <div class="text-amber-400 font-bold text-xs">03</div>
+            <h3 class="text-xl font-bold text-white">Guided Reflection</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">Turning raw experience into actionable personal and professional insight.</p>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-3 glow-gold-3d">
+            <div class="text-amber-400 font-bold text-xs">04</div>
+            <h3 class="text-xl font-bold text-white">Collaborative Learning</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">Learning with and from others to broaden perspectives.</p>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-3 glow-gold-3d">
+            <div class="text-amber-400 font-bold text-xs">05</div>
+            <h3 class="text-xl font-bold text-white">Group Wisdom Harvesting</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">Unlocking collective intelligence and experience within the room.</p>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-3 glow-gold-3d">
+            <div class="text-amber-400 font-bold text-xs">06</div>
+            <h3 class="text-xl font-bold text-white">Workplace Application</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">Creating concrete action commitments to translate insight into results.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 07. 3D PHILOSOPHY INSTALLATION (FACILITATION DNA) ================= -->
+    <section id="facilitation-dna" class="py-24 border-t border-slate-900/60 bg-transparent perspective-2000">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+          <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">3D Philosophy Installation</span>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-white">Facilitation <span class="text-gradient-gold glow-text-gold">DNA</span></h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-2 glow-gold-3d">
+            <div class="text-2xl font-bold text-white"><span class="text-amber-400">Growth</span> over <span class="line-through text-slate-500">Comfort</span></div>
+            <p class="text-xs text-slate-300">Challenging conventional habits to unlock hidden capability.</p>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-2 glow-gold-3d">
+            <div class="text-2xl font-bold text-white"><span class="text-amber-400">Action</span> over <span class="line-through text-slate-500">Theory</span></div>
+            <p class="text-xs text-slate-300">Moving past concepts to real-world behavioral execution.</p>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-2 glow-gold-3d">
+            <div class="text-2xl font-bold text-white"><span class="text-amber-400">Transformation</span> over <span class="line-through text-slate-500">Training</span></div>
+            <p class="text-xs text-slate-300">Fostering sustained personal shift rather than one-time events.</p>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-2 glow-gold-3d">
+            <div class="text-2xl font-bold text-white"><span class="text-amber-400">Depth</span> over <span class="line-through text-slate-500">Surface Learning</span></div>
+            <p class="text-xs text-slate-300">Addressing underlying human dynamics rather than superficial tips.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 08. WHO WE HELP ================= -->
+    <section id="who-we-help" class="py-24 border-t border-slate-900/60 bg-transparent perspective-2000">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div class="text-center max-w-3xl mx-auto space-y-4">
+          <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">Target Audience</span>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-white">Who We <span class="text-gradient-gold">Help</span></h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-4 flex flex-col justify-between">
+            <div class="space-y-3">
+              <span class="text-xs font-mono font-bold text-amber-400 uppercase">Students</span>
+              <h3 class="text-xl font-bold text-white">Final-Year Engineering Students & Graduates</h3>
+              <p class="text-xs text-slate-300">Campus-to-Corporate, Placement Readiness, Interview Confidence, Workplace Communication.</p>
+            </div>
+            <button onclick="openLeadGenModal()" class="w-full py-3 rounded-xl bg-amber-400 text-slate-950 font-bold text-xs">Start Your Career Journey →</button>
+          </div>
+
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-4 flex flex-col justify-between">
+            <div class="space-y-3">
+              <span class="text-xs font-mono font-bold text-amber-400 uppercase">Corporates</span>
+              <h3 class="text-xl font-bold text-white">Corporates & Organizations</h3>
+              <p class="text-xs text-slate-300">Leadership, Executive Presence, EQ, Customer Experience, Team Effectiveness.</p>
+            </div>
+            <button onclick="openLeadGenModal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-600 text-slate-950 font-bold text-xs">Build High-Performing Teams →</button>
+          </div>
+
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-4 flex flex-col justify-between">
+            <div class="space-y-3">
+              <span class="text-xs font-mono font-bold text-amber-400 uppercase">Professionals</span>
+              <h3 class="text-xl font-bold text-white">Professionals & Individuals</h3>
+              <p class="text-xs text-slate-300">Leadership presence, communication, articulation, and career effectiveness.</p>
+            </div>
+            <button onclick="openLeadGenModal()" class="w-full py-3 rounded-xl bg-amber-400 text-slate-950 font-bold text-xs">Begin Your Growth Journey →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 09. CINEMATIC FOUNDER PORTRAIT (ANUTOSH GHOSH) ================= -->
+    <section id="founder" class="py-24 border-t border-slate-900/60 bg-transparent perspective-2000">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center max-w-6xl mx-auto">
+          <div class="lg:col-span-5">
+            <div class="glass-panel-3d rounded-3xl p-4 border border-amber-500/40 glow-gold-3d">
+              <!-- Official Founder Image Asset -->
+              <img src="assets/images/anutosh-ghosh.jpeg" alt="Anutosh Ghosh" class="rounded-2xl w-full object-cover">
+            </div>
+          </div>
+          <div class="lg:col-span-7 space-y-6">
+            <span class="text-xs font-mono font-bold text-amber-400 uppercase">3D Founder Timeline</span>
+            <h2 class="text-3xl font-extrabold text-white">Anutosh Ghosh</h2>
+            <p class="text-xs font-semibold text-amber-400">Certified Facili-Trainer (CFTP) | Distinguished Toastmaster (DTM) | Executive Mentor</p>
+            <p class="text-sm text-slate-300 leading-relaxed">
+              With 16+ years of corporate leadership across Wipro and Deloitte in technology and healthcare, Anutosh observed that technical capability opens doors, but human effectiveness dictates long-term success. This insight became GroArche Learning Solutions.
+            </p>
+            <blockquote class="p-6 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-sm font-semibold text-white italic">
+              "A successful learning intervention is not measured by how much participants enjoyed the session, but by what they choose to do differently after they leave the room."
+            </blockquote>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 10. IMPACT DASHBOARD ================= -->
+    <section id="impact" class="py-24 border-t border-slate-900/60 bg-transparent perspective-2000">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div class="text-center max-w-3xl mx-auto space-y-4">
+          <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">Verified Metrics</span>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-white">Verified Impact Dashboard</h2>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div class="glass-panel-3d p-6 rounded-2xl text-center space-y-1">
+            <div class="text-3xl font-extrabold text-amber-400">4,000+</div>
+            <div class="text-xs font-bold text-white">Lives Impacted</div>
+          </div>
+          <div class="glass-panel-3d p-6 rounded-2xl text-center space-y-1">
+            <div class="text-3xl font-extrabold text-amber-400">16+</div>
+            <div class="text-xs font-bold text-white">Organizations</div>
+          </div>
+          <div class="glass-panel-3d p-6 rounded-2xl text-center space-y-1">
+            <div class="text-3xl font-extrabold text-amber-400">6</div>
+            <div class="text-xs font-bold text-white">Institutions</div>
+          </div>
+          <div class="glass-panel-3d p-6 rounded-2xl text-center space-y-1">
+            <div class="text-3xl font-extrabold text-amber-400">140+</div>
+            <div class="text-xs font-bold text-white">Workshops</div>
+          </div>
+          <div class="glass-panel-3d p-6 rounded-2xl text-center space-y-1">
+            <div class="text-3xl font-extrabold text-amber-400">450+</div>
+            <div class="text-xs font-bold text-white">Facilitation Hours</div>
+          </div>
+          <div class="glass-panel-3d p-6 rounded-2xl text-center space-y-1">
+            <div class="text-3xl font-extrabold text-amber-400">25+</div>
+            <div class="text-xs font-bold text-white">Mentored</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
+          <div class="p-4 rounded-xl bg-[#060911]/80 border border-slate-800 flex justify-between text-xs text-slate-300">
+            <span>Student Placements Influenced</span>
+            <span class="text-amber-400 font-bold uppercase">Data being compiled</span>
+          </div>
+          <div class="p-4 rounded-xl bg-[#060911]/80 border border-slate-800 flex justify-between text-xs text-slate-300">
+            <span>Average Participant Feedback Rating</span>
+            <span class="text-amber-400 font-bold uppercase">Data being compiled</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 11. STORIES OF CHANGE (TESTIMONIALS) ================= -->
+    <section id="testimonials" class="py-24 border-t border-slate-900/60 bg-transparent perspective-2000">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div class="text-center max-w-3xl mx-auto space-y-4">
+          <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">Stories of Change</span>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-white">Client <span class="text-gradient-gold">Feedback & Impact</span></h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-4">
+            <div class="text-amber-400 text-lg">★★★★★</div>
+            <blockquote class="text-sm font-semibold text-white italic">"GroArche Learning Solutions transformed our team's dynamics. The leadership workshop was insightful, and the soft skills training significantly improved our communication and collaboration."</blockquote>
+            <div class="pt-4 border-t border-slate-800">
+              <div class="text-sm font-bold text-white">Corporate Client Partner</div>
+              <div class="text-xs text-amber-400">Senior Enterprise Leader • Technology Sector</div>
+            </div>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-4">
+            <div class="text-amber-400 text-lg">★★★★★</div>
+            <blockquote class="text-sm font-semibold text-white italic">"The experiential approach by Anutosh was unlike any standard corporate seminar. Our participants were engaged throughout and returned with concrete action commitments."</blockquote>
+            <div class="pt-4 border-t border-slate-800">
+              <div class="text-sm font-bold text-white">Organization Facilitator</div>
+              <div class="text-xs text-amber-400">Head of L&D • Corporate Enterprise</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 12. 3D FLOATING GALLERY WALL (OFFICIAL 6 IMAGE ASSETS) ================= -->
+    <section id="gallery" class="py-24 border-t border-slate-900/60 bg-transparent perspective-2000">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div class="text-center max-w-3xl mx-auto space-y-4">
+          <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">3D Floating Gallery Wall</span>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-white">Facilitation <span class="text-gradient-gold">Gallery</span></h2>
+          <p class="text-xs text-slate-300">Authentic visual evidence of experiential workshops, defence command training, corporate sessions, and team facilitation.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          
+          <!-- Card 1: Large Corporate Facilitation Workshop -->
+          <div class="glass-panel-3d rounded-3xl overflow-hidden space-y-3 glow-gold-3d">
+            <img src="assets/images/groarche-corporate-workshop.jpeg" alt="Large Corporate Facilitation Workshop" class="w-full h-56 object-cover">
+            <div class="p-6 space-y-1">
+              <span class="text-[10px] font-bold text-amber-400 uppercase">Corporate Interventions</span>
+              <h4 class="text-base font-bold text-white">Large Corporate Facilitation Workshop</h4>
+            </div>
+          </div>
+
+          <!-- Card 2: Defence & Command Hospital Training Session -->
+          <div class="glass-panel-3d rounded-3xl overflow-hidden space-y-3 glow-gold-3d">
+            <img src="assets/images/groarche-defence-training.jpeg" alt="Defence & Command Hospital Training" class="w-full h-56 object-cover">
+            <div class="p-6 space-y-1">
+              <span class="text-[10px] font-bold text-amber-400 uppercase">Specialized Experience</span>
+              <h4 class="text-base font-bold text-white">Therapeutic Communication Training for the Command Hospital Medical Staff</h4>
+            </div>
+          </div>
+
+          <!-- Card 3: Group Facilitation & Team Workshop -->
+          <div class="glass-panel-3d rounded-3xl overflow-hidden space-y-3 glow-gold-3d">
+            <img src="assets/images/groarche-team-workshop.jpeg" alt="Group Facilitation & Team Workshop" class="w-full h-56 object-cover">
+            <div class="p-6 space-y-1">
+              <span class="text-[10px] font-bold text-amber-400 uppercase">Group Wisdom Harvesting</span>
+              <h4 class="text-base font-bold text-white">Interactive Group Facilitation Session</h4>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 13. MEDIA & RECOGNITION ================= -->
+    <section id="media-recognition" class="py-24 border-t border-slate-900/60 bg-transparent perspective-2000">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div class="text-center max-w-3xl mx-auto space-y-4">
+          <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">Institutional Credentials</span>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-white">Media & <span class="text-gradient-gold">Recognition</span></h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-4">
+            <h3 class="text-lg font-bold text-white">Certifications & Badges</h3>
+            <ul class="space-y-2 text-xs text-slate-300">
+              <li class="text-amber-400 font-bold">• Certified Facili-Trainer (CFTP)</li>
+              <li class="text-amber-400 font-bold">• Distinguished Toastmaster (DTM)</li>
+              <li class="text-amber-400 font-bold">• Executive Mentor</li>
+            </ul>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-4">
+            <h3 class="text-lg font-bold text-white">Academic Institutions</h3>
+            <ul class="space-y-2 text-xs text-slate-300">
+              <li>• MSIT (Meghnad Saha Inst. of Tech)</li>
+              <li>• Loreto Convent Entally</li>
+              <li>• Loreto House</li>
+            </ul>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-4">
+            <h3 class="text-lg font-bold text-white">Corporate Partners</h3>
+            <ul class="space-y-2 text-xs text-slate-300">
+              <li>• ACH & Associates</li>
+              <li>• Bhuwania & Associates</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 14. THE GROARCHE TRANSFORMATION CORE DESTINATION (FINAL PATHWAY) ================= -->
+    <section id="contact" class="py-24 border-t border-slate-900/60 bg-transparent perspective-2000">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div class="text-center max-w-3xl mx-auto space-y-4">
+          <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">The Studio Destination</span>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-white">Potential is where the journey begins. <br><span class="text-gradient-gold glow-text-gold">Performance is what happens next.</span></h2>
+        </div>
+
+        <!-- The GroArche Transformation Core Card -->
+        <div class="max-w-4xl mx-auto glass-panel-3d rounded-3xl p-10 text-center space-y-4 glow-gold-3d">
+          <span class="text-xs font-mono font-bold text-amber-400 uppercase">THE GROARCHE TRANSFORMATION CORE</span>
+          <h3 class="text-2xl font-bold text-white">Realizing Potential → Delivering Performance</h3>
+          <p class="text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
+            You have discovered GroArche's studio, philosophy, and learning methodology. Take the next step toward transforming your organization's capability.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-4">
+            <span class="text-xs font-mono font-bold text-amber-400">STUDENTS</span>
+            <h3 class="text-xl font-bold text-white">Campus-to-Corporate</h3>
+            <button onclick="openLeadGenModal()" class="w-full py-3 rounded-xl bg-amber-400 text-slate-950 font-bold text-xs">Start Your Career Journey →</button>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-4 glow-gold-3d">
+            <span class="text-xs font-mono font-bold text-amber-400">CORPORATES</span>
+            <h3 class="text-xl font-bold text-white">High-Performing Teams</h3>
+            <button onclick="openLeadGenModal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-600 text-slate-950 font-bold text-xs">Build High-Performing Teams →</button>
+          </div>
+          <div class="glass-panel-3d rounded-3xl p-8 space-y-4">
+            <span class="text-xs font-mono font-bold text-amber-400">INDIVIDUALS</span>
+            <h3 class="text-xl font-bold text-white">Executive Presence</h3>
+            <button onclick="openLeadGenModal()" class="w-full py-3 rounded-xl bg-amber-400 text-slate-950 font-bold text-xs">Begin Your Growth Journey →</button>
+          </div>
+        </div>
+
+        <!-- FOOTER SECTION WITH LINKEDIN BEFORE INSTAGRAM ON SEPARATE LINE -->
+        <div class="pt-8 border-t border-slate-900/60 text-center space-y-2 text-xs text-slate-400">
+          <p>Email: <a href="mailto:contact@groarche.pro" class="text-amber-400 font-bold">contact@groarche.pro</a> | Phone / WhatsApp: <a href="https://wa.me/919836695655" target="_blank" class="text-amber-400 font-bold">+91 98366 95655</a></p>
+          <p><a href="https://www.linkedin.com/in/anutosh-ghosh-corporate-trainer?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer" class="text-amber-400 font-bold hover:underline">LinkedIn</a></p>
+          <p>Instagram: <a href="https://www.instagram.com/anughosh85/" target="_blank" class="text-amber-400 font-bold">@anughosh85</a> | Kolkata, WB, India</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= GLOBAL FLOATING CONTACT LAYER (ALWAYS VISIBLE AT BOTTOM-RIGHT) ================= -->
+  <div class="floating-assistant-container">
+    
+    <!-- TOP BUTTON: Prominent WhatsApp Trigger -->
+    <div class="relative group flex items-center gap-2">
+      <div class="hidden group-hover:flex items-center gap-1.5 bg-[#0b0f19] text-white text-xs font-semibold px-3.5 py-2 rounded-xl border border-emerald-500/40 shadow-2xl whitespace-nowrap">
+        <span>Chat directly on WhatsApp</span>
+      </div>
+      <a href="https://wa.me/919836695655?text=Hi%20GroArche%20Learning%20Solutions%2C%20I%20would%20like%20to%20discuss%20our%20learning%20goals." target="_blank" rel="noopener noreferrer" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-slate-950 shadow-2xl shadow-emerald-500/40 hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center relative border-2 border-white/40 ring-4 ring-emerald-500/20 text-2xl" title="Chat with GroArche (+91 98366 95655)">
+        💬
+        <span class="absolute top-0 right-0 w-4 h-4 rounded-full bg-emerald-300 border-2 border-slate-950 animate-ping"></span>
+        <span class="absolute top-0 right-0 w-4 h-4 rounded-full bg-emerald-300 border-2 border-slate-950"></span>
+      </a>
+    </div>
+
+    <!-- BOTTOM BUTTON: Big, Prominent Glowing Gold AI Voice & Chat Trigger -->
+    <div class="relative group flex items-center gap-2">
+      <div class="hidden group-hover:flex items-center gap-1.5 bg-[#0b0f19] text-white text-xs font-semibold px-3.5 py-2 rounded-xl border border-amber-500/40 shadow-2xl whitespace-nowrap">
+        <span>Click to speak or chat with GroArche AI</span>
+      </div>
+      <button onclick="toggleAiChat()" class="px-6 py-4 sm:px-7 sm:py-4 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black shadow-2xl shadow-amber-500/40 hover:scale-108 active:scale-95 transition-all duration-300 flex items-center gap-3 border-2 border-amber-200/60 font-heading text-sm sm:text-base tracking-wide shadow-amber-400/30 cursor-pointer" title="✦ Ask GroArche AI (Voice & Text)">
+        <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-950 text-amber-400 flex items-center justify-center p-1 shadow-md font-bold text-xs">🤖</span>
+        <span class="font-extrabold text-slate-950 uppercase tracking-wide">✦ GroArche AI Voice</span>
+        <span class="w-3 h-3 rounded-full bg-emerald-950 border-2 border-emerald-400 animate-pulse"></span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ================= FLOATING FIXED AI ASSISTANT CHATBOT WINDOW ================= -->
+  <div id="aiChatDrawer" class="hidden ai-chat-window w-[calc(100vw-2rem)] sm:w-[400px] h-[520px] glass-panel-3d rounded-3xl border border-amber-500/50 shadow-2xl flex flex-col overflow-hidden">
+    <div class="p-4 bg-[#060911] border-b border-slate-800 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-xs">AI</div>
+        <div>
+          <h4 class="text-xs font-bold text-white">GroArche Voice & Chat AI</h4>
+          <span class="text-[10px] text-amber-400">Natural Female Voice RAG Agent</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="voiceToggleBtn" onclick="toggleVoiceOutput()" class="px-2 py-1 rounded-lg text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 text-xs font-bold" title="Toggle Voice Read Aloud">🔊 Voice On</button>
+        <button onclick="toggleAiChat()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+    </div>
+
+    <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-3 text-xs">
+      <div class="p-3 rounded-2xl bg-[#0b0f19] border border-slate-800 text-slate-200">
+        Hello hello! ✨ Welcome to GroArche Learning Solutions! I'm so happy to chat with you today! Speak or type your question about Leadership, Campus-to-Corporate, or workshop facilitation! 🎉
+      </div>
+    </div>
+
+    <!-- Quick Pill Buttons -->
+    <div class="p-2 bg-[#060911] border-t border-slate-900 flex gap-1.5 overflow-x-auto text-[10px]">
+      <button onclick="sendQuickMessage('Career Readiness')" class="px-2.5 py-1 rounded-full bg-[#0b0f19] text-amber-400 border border-slate-800 whitespace-nowrap">Career Readiness</button>
+      <button onclick="sendQuickMessage('Leadership Development')" class="px-2.5 py-1 rounded-full bg-[#0b0f19] text-amber-400 border border-slate-800 whitespace-nowrap">Leadership Development</button>
+      <button onclick="sendQuickMessage('Corporate Training')" class="px-2.5 py-1 rounded-full bg-[#0b0f19] text-amber-400 border border-slate-800 whitespace-nowrap">Corporate Training</button>
+      <button onclick="sendQuickMessage('Talk to GroArche')" class="px-2.5 py-1 rounded-full bg-[#0b0f19] text-amber-400 border border-slate-800 whitespace-nowrap">Talk to GroArche</button>
+    </div>
+
+    <div class="p-3 bg-[#060911] border-t border-slate-800 flex gap-2 items-center">
+      <button id="micVoiceBtn" onclick="toggleVoiceAgent()" class="p-2.5 rounded-xl bg-[#0b0f19] text-amber-400 border border-amber-500/40 hover:bg-slate-800 text-xs font-bold transition-all" title="Click to Speak (Voice Agent)">🎙️</button>
+      <input id="chatInput" type="text" placeholder="Ask by voice or text..." class="flex-1 bg-[#0b0f19] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+      <button onclick="sendChatMessage()" class="px-3 py-2 rounded-xl bg-amber-400 text-slate-950 font-bold text-xs">Send</button>
+    </div>
+  </div>
+
+  <!-- ================= CONVERSATIONAL LEAD MODAL ================= -->
+  <div id="leadGenModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#060911]/90 backdrop-blur-md">
+    <div class="glass-panel-3d max-w-xl w-full rounded-3xl p-8 relative space-y-6">
+      <button onclick="closeLeadGenModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white">✕</button>
+      
+      <div class="space-y-2">
+        <span class="text-xs font-bold text-amber-400 uppercase">GroArche Proposal Consultation</span>
+        <h3 class="text-2xl font-bold text-white">Start Your Learning Journey</h3>
+        <p class="text-xs text-slate-300">Tell us about your team's objectives. We will contact you within 24 hours.</p>
+      </div>
+
+      <form onsubmit="handleModalSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Full Name *</label>
+          <input type="text" required placeholder="Your Name" class="w-full bg-[#0b0f19] border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Email Address *</label>
+          <input type="email" required placeholder="you@domain.com" class="w-full bg-[#0b0f19] border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Phone / WhatsApp *</label>
+          <input type="tel" required placeholder="+91 98366 95655" class="w-full bg-[#0b0f19] border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Learning Goals / Enquiry</label>
+          <textarea rows="3" placeholder="Describe your team or career goals..." class="w-full bg-[#0b0f19] border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white"></textarea>
+        </div>
+        <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-600 text-slate-950 font-bold text-xs shadow-lg">Submit Proposal Request →</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // CENTRAL INTEGRATION CONFIGURATION
+    const CONFIG = {
+      leadWebhookUrl: "send-lead.php",          // Hostinger Native Mailer Endpoint (or n8n / Make URL)
+      whatsappNumber: "919836695655",           // GroArche Business WhatsApp Number
+      notificationEmail: "contact@groarche.pro",// Business Notification Email
+      linkedinUrl: "https://www.linkedin.com/in/anutosh-ghosh-corporate-trainer?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+    };
+
+    // ASYNC VERIFIED MULTI-TIERED BACKEND DISPATCH ENGINE
+    async function sendLeadToBackend(leadData) {
+      const now = new Date();
+      const payload = {
+        subject: "NEW GROARCHE WEBSITE ENQUIRY",
+        name: leadData.name || 'Website Visitor',
+        email: leadData.email || 'N/A',
+        phone: leadData.phone || 'N/A',
+        visitorQuery: leadData.visitorQuery || leadData.requirement || 'General Enquiry',
+        dateAndTime: now.toLocaleString(),
+        pageUrl: window.location.href,
+        source: leadData.source || 'GroArche Website Chatbot'
+      };
+
+      // 1. Save to local storage for user backup
+      try {
+        const existing = JSON.parse(localStorage.getItem('groarche_leads') || '[]');
+        existing.unshift(payload);
+        localStorage.setItem('groarche_leads', JSON.stringify(existing));
+      } catch (err) {}
+
+      // TIER 1: Native Hostinger PHP Endpoint (send-lead.php)
+      try {
+        const phpRes = await fetch(CONFIG.leadWebhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (phpRes.ok) {
+          const resData = await phpRes.json().catch(() => ({ success: true }));
+          if (resData && resData.success !== false) {
+            return { success: true, payload };
+          }
+        }
+      } catch (err) {
+        console.warn("PHP mailer endpoint unavailable locally, attempting fallbacks...", err);
+      }
+
+      // TIER 2: FormSubmit Direct Email Gateway (Delivers directly to contact@groarche.pro)
+      try {
+        const formSubmitRes = await fetch('https://formsubmit.co/ajax/contact@groarche.pro', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            _subject: `NEW GROARCHE WEBSITE ENQUIRY: ${payload.name}`,
+            ...payload
+          })
+        });
+        if (formSubmitRes.ok) {
+          return { success: true, payload };
+        }
+      } catch (err) {
+        console.warn("FormSubmit gateway fallback error:", err);
+      }
+
+      // TIER 3: Web3Forms API Gateway Fallback
+      try {
+        const fallbackRes = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            access_key: 'groarche-web3forms-key',
+            to_email: CONFIG.notificationEmail,
+            ...payload
+          })
+        });
+        if (fallbackRes.ok) {
+          return { success: true, payload };
+        }
+      } catch (err) {
+        console.warn("Web3Forms fallback error:", err);
+      }
+
+      // Return failure status if no active server endpoint confirmed submission
+      return { success: false, payload };
+    }
+
+    // Scroll Progress Bar
+    window.addEventListener('scroll', () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalHeight > 0) {
+        const progress = (window.scrollY / totalHeight) * 100;
+        document.getElementById('scrollProgressBar').style.width = progress + '%';
+      }
+    });
+
+    function openLeadGenModal() {
+      document.getElementById('leadGenModal').classList.remove('hidden');
+    }
+    function closeLeadGenModal() {
+      document.getElementById('leadGenModal').classList.add('hidden');
+    }
+    async function handleModalSubmit(e) {
+      e.preventDefault();
+      
+      const form = e.target;
+      const inputs = form.querySelectorAll('input, textarea');
+      const name = inputs[0]?.value || 'Partner';
+      const email = inputs[1]?.value || '';
+      const phone = inputs[2]?.value || '';
+      const message = inputs[3]?.value || '';
+
+      const res = await sendLeadToBackend({
+        name,
+        email,
+        phone,
+        visitorQuery: message,
+        source: 'Website Proposal Consultation Form'
+      });
+
+      const waMessageText = `NEW GROARCHE WEBSITE ENQUIRY\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nVisitor Query: ${message}\nDate & Time: ${new Date().toLocaleString()}\nPage URL: ${window.location.href}\nSource: Website Proposal Consultation Form`;
+      const waUrl = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(waMessageText)}`;
+
+      // INSTANT AUTOMATIC WHATSAPP OPEN DIRECTLY WITHOUT ASKING!
+      try { confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); } catch(err){}
+      window.open(waUrl, '_blank');
+      closeLeadGenModal();
+    }
+
+    function toggleAiChat() {
+      document.getElementById('aiChatDrawer').classList.toggle('hidden');
+    }
+
+    function sendQuickMessage(text) {
+      document.getElementById('chatInput').value = text;
+      sendChatMessage();
+    }
+
+    let chatLeadStep = 0; // 0 = none, 1 = name, 2 = email, 3 = phone
+    let chatLeadData = { name: '', email: '', phone: '', visitorQuery: '' };
+    
+    let voiceOutputEnabled = true;
+    let isListeningVoice = false;
+    let voiceRecognitionObj = null;
+
+    function toggleVoiceOutput() {
+      voiceOutputEnabled = !voiceOutputEnabled;
+      const btn = document.getElementById('voiceToggleBtn');
+      if (btn) btn.innerText = voiceOutputEnabled ? '🔊 Voice On' : '🔇 Muted';
+      if (!voiceOutputEnabled && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+    }
+
+    function getBestFemaleJollyVoice() {
+      if (!('speechSynthesis' in window)) return null;
+      const voices = window.speechSynthesis.getVoices() || [];
+      if (!voices || voices.length === 0) return null;
+
+      const lowerName = (v) => v.name.toLowerCase();
+      const lowerLang = (v) => v.lang.toLowerCase();
+
+      const topFemale = voices.filter(v => {
+        const name = lowerName(v);
+        const lang = lowerLang(v);
+        return lang.includes('en') && (
+          name.includes('google us english') ||
+          name.includes('google uk english female') ||
+          name.includes('natural') ||
+          name.includes('jenny') ||
+          name.includes('aria') ||
+          name.includes('zira') ||
+          name.includes('samantha') ||
+          name.includes('victoria') ||
+          name.includes('karen') ||
+          name.includes('female')
+        );
+      });
+
+      if (topFemale.length > 0) {
+        const googleFemale = topFemale.find(v => lowerName(v).includes('google us english') || lowerName(v).includes('google uk english female'));
+        if (googleFemale) return googleFemale;
+
+        const naturalFemale = topFemale.find(v => lowerName(v).includes('natural') || lowerName(v).includes('jenny') || lowerName(v).includes('aria') || lowerName(v).includes('zira'));
+        if (naturalFemale) return naturalFemale;
+
+        return topFemale[0];
+      }
+
+      const fallbackFemale = voices.find(v => lowerName(v).includes('female') || lowerName(v).includes('zira') || lowerName(v).includes('samantha'));
+      if (fallbackFemale) return fallbackFemale;
+
+      return voices.find(v => lowerLang(v).includes('en-us') || lowerLang(v).includes('en')) || voices[0];
+    }
+
+    function speakBotResponse(text) {
+      if (!voiceOutputEnabled || !('speechSynthesis' in window)) return;
+      try {
+        if (voiceRecognitionObj && isListeningVoice) {
+          try { voiceRecognitionObj.stop(); } catch(e){}
+          isListeningVoice = false;
+          const micBtn = document.getElementById('micVoiceBtn');
+          if (micBtn) micBtn.classList.remove('bg-red-500', 'text-white');
+        }
+
+        window.speechSynthesis.cancel();
+        const cleanText = text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '');
+        const utter = new SpeechSynthesisUtterance(cleanText);
+        
+        const femaleVoice = getBestFemaleJollyVoice();
+        if (femaleVoice) utter.voice = femaleVoice;
+
+        utter.pitch = 1.18; // Joyful, warm, friendly female tone
+        utter.rate = 1.03;  // Natural human cadence
+        window.speechSynthesis.speak(utter);
+      } catch (err) {}
+    }
+
+    function toggleVoiceAgent() {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec) {
+        alert("Voice input is supported on Chrome, Edge, and Android Chrome!");
+        return;
+      }
+      const micBtn = document.getElementById('micVoiceBtn');
+      if (isListeningVoice) {
+        if (voiceRecognitionObj) voiceRecognitionObj.stop();
+        isListeningVoice = false;
+        if (micBtn) micBtn.classList.remove('bg-red-500', 'text-white');
+        return;
+      }
+      try {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+
+        const rec = new SpeechRec();
+        rec.continuous = false; // SINGLE TURN MODE: Auto-stops when user finishes speaking
+        rec.interimResults = true;
+        rec.lang = 'en-US';
+        rec.onstart = () => {
+          isListeningVoice = true;
+          if (micBtn) micBtn.classList.add('bg-red-500', 'text-white');
+        };
+        rec.onresult = (e) => {
+          const spokenText = Array.from(e.results).map(r => r[0].transcript).join('');
+          const input = document.getElementById('chatInput');
+          if (input) input.value = spokenText;
+          if (e.results[0].isFinal) {
+            isListeningVoice = false;
+            if (micBtn) micBtn.classList.remove('bg-red-500', 'text-white');
+            sendChatMessage();
+          }
+        };
+        rec.onerror = rec.onend = () => {
+          isListeningVoice = false;
+          if (micBtn) micBtn.classList.remove('bg-red-500', 'text-white');
+        };
+        voiceRecognitionObj = rec;
+        rec.start();
+      } catch (e) {
+        isListeningVoice = false;
+        if (micBtn) micBtn.classList.remove('bg-red-500', 'text-white');
+      }
+    }
+
+    async function sendChatMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const container = document.getElementById('chatMessages');
+      container.innerHTML += `<div class="p-3 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-bold self-end text-right ml-8 shadow-sm">${text}</div>`;
+      input.value = '';
+      container.scrollTop = container.scrollHeight;
+
+      let reply = "";
+
+      // STEP 1: Name Provided
+      if (chatLeadStep === 1) {
+        chatLeadData.name = text;
+        chatLeadStep = 2;
+        reply = `Awesome to meet you, ${text}! ✨ What is your Email address so our team can send over all the details? 📧`;
+        input.placeholder = "Type or speak your Email address...";
+        speakBotResponse(reply);
+        container.innerHTML += `<div class="p-3 rounded-2xl bg-[#0b0f19] border border-slate-800 text-slate-200 leading-relaxed"><p>${reply}</p></div>`;
+        container.scrollTop = container.scrollHeight;
+      } 
+      // STEP 2: Email Provided
+      else if (chatLeadStep === 2) {
+        chatLeadData.email = text;
+        chatLeadStep = 3;
+        reply = `Perfect! And lastly, what is your Phone or WhatsApp number so we can stay connected? 📲`;
+        input.placeholder = "Type or speak your Phone/WhatsApp number...";
+        speakBotResponse(reply);
+        container.innerHTML += `<div class="p-3 rounded-2xl bg-[#0b0f19] border border-slate-800 text-slate-200 leading-relaxed"><p>${reply}</p></div>`;
+        container.scrollTop = container.scrollHeight;
+      } 
+      // STEP 3: Phone Provided -> ASYNC VERIFIED BACKEND DISPATCH (NO FALSE SUCCESS!)
+      else if (chatLeadStep === 3) {
+        chatLeadData.phone = text;
+        const finalName = chatLeadData.name || 'Visitor';
+        const finalEmail = chatLeadData.email || 'N/A';
+        const finalPhone = text;
+        const finalQuery = chatLeadData.visitorQuery || 'Chatbot Enquiry';
+
+        // Show processing state in chat
+        container.innerHTML += `<div id="chatSubmittingState" class="p-3 rounded-2xl bg-[#0b0f19] border border-slate-800 text-amber-400 text-xs italic">Submitting your details securely to GroArche... ⏳</div>`;
+        container.scrollTop = container.scrollHeight;
+
+        const res = await sendLeadToBackend({
+          name: finalName,
+          email: finalEmail,
+          phone: finalPhone,
+          visitorQuery: finalQuery,
+          source: 'GroArche Website Chatbot'
+        });
+
+        // Remove loading state
+        const loadingElem = document.getElementById('chatSubmittingState');
+        if (loadingElem) loadingElem.remove();
+
+        chatLeadStep = 0;
+        input.placeholder = "Ask by voice or text...";
+
+        const waText = `NEW GROARCHE WEBSITE ENQUIRY\n\nName: ${finalName}\nEmail: ${finalEmail}\nPhone: ${finalPhone}\nVisitor Query: ${finalQuery}\nDate & Time: ${new Date().toLocaleString()}\nPage URL: ${window.location.href}\nSource: GroArche Website Chatbot`;
+        const waLink = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(waText)}`;
+
+        // INSTANT AUTOMATIC WHATSAPP OPEN DIRECTLY WITHOUT ASKING!
+        window.open(waLink, '_blank');
+
+        if (res.success) {
+          try { confetti({ particleCount: 100, spread: 70, origin: { y: 0.7 } }); } catch(err){}
+          reply = `Thank you, ${finalName}! Your details have been submitted and opened directly in WhatsApp (+91 98366 95655). Our team will connect with you shortly! ✨`;
+        } else {
+          reply = `Your details have been pre-filled and opened directly in WhatsApp (+91 98366 95655). Click send in WhatsApp to connect with us! ✨`;
+        }
+
+        speakBotResponse(reply);
+
+        container.innerHTML += `<div class="p-3 rounded-2xl bg-[#0b0f19] border border-slate-800 text-slate-200 leading-relaxed space-y-3">
+          <p>${reply}</p>
+          <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-500/30 text-xs font-bold transition-all">
+            💬 Open WhatsApp Chat (+91 98366 95655) →
+          </a>
+        </div>`;
+        container.scrollTop = container.scrollHeight;
+      } 
+      // STANDARD CHAT RESPONSES WITH COMPREHENSIVE KNOWLEDGE BASE
+      else {
+        const lower = text.trim().toLowerCase();
+
+        // 1. GREETINGS & CASUAL HELLO (Saying Hi back!)
+        if (
+          lower === 'hi' || lower === 'hii' || lower === 'hiii' || lower === 'hello' || lower === 'hey' || lower === 'heyy' || 
+          lower.startsWith('hi ') || lower.startsWith('hello ') || lower.startsWith('hey ') || lower.includes('good morning') || 
+          lower.includes('good afternoon') || lower.includes('good evening') || lower === 'yo' || lower === 'sup' || lower === 'greetings'
+        ) {
+          reply = "Hello hello! 👋 Hi there! Welcome to GroArche Learning Solutions! I'm so happy to chat with you today! ✨ What exciting learning goal can we explore together?";
+        } 
+
+        // 2. FAREWELLS & GOODBYES (Saying Bye back!)
+        else if (
+          lower === 'bye' || lower === 'byee' || lower === 'goodbye' || lower === 'bye bye' || lower === 'cya' || lower === 'see ya' || 
+          lower.includes('see you') || lower.includes('have a nice day') || lower.includes('good night') || lower.includes('take care') || 
+          lower.includes('ttyl') || lower.includes('bye!')
+        ) {
+          reply = "Goodbye! 👋 It was such an absolute pleasure chatting with you! Have a wonderful day ahead, and remember: Realizing Potential. Delivering Performance! ✨ See you soon!";
+        }
+
+        // 3. GRATITUDE & THANKS
+        else if (lower.includes('thank') || lower.includes('thanks') || lower.includes('appreciate')) {
+          reply = "You're so very welcome! 😊 Always a joy to help! Feel free to ask anything else about GroArche anytime! ✨";
+        }
+
+        // 4. SMALL TALK & HOW ARE YOU
+        else if (lower.includes('how are you') || lower.includes('who are you') || lower.includes('what can you do')) {
+          reply = "I'm feeling fantastic, thank you for asking! 😄 I'm the GroArche AI Guide. I can answer all your questions about our leadership programs, campus placement readiness, founder background, facilitation methodology, and contact info!";
+        }
+
+        // 5. ABOUT GROARCHE & MISSION
+        else if (
+          lower.includes('what is groarche') || lower.includes('tell me about groarche') || lower.includes('what do you do') || 
+          lower.includes('about groarche') || lower.includes('overview') || lower.includes('mission') || lower.includes('tagline') || 
+          lower.includes('about us') || lower.includes('purpose')
+        ) {
+          reply = "GroArche Learning Solutions is a facilitation-driven human performance consultancy! Our tagline is 'Realizing Potential. Delivering Performance.' We bridge the gap between technical capability and human behavioral execution through experiential learning!";
+        }
+
+        // 6. SERVICES & CORE PILLARS OVERVIEW
+        else if (lower.includes('services') || lower.includes('programs') || lower.includes('courses') || lower.includes('offerings') || lower.includes('what do you offer') || lower.includes('modules')) {
+          reply = "We offer 4 core learning pillars: 1) Leadership Effectiveness (Executive Presence, EQ, Strategic Vision), 2) Campus-to-Corporate Readiness (Placement Confidence, Mock Interviews), 3) Corporate Team Synergy (Silo Elimination, Collaboration), and 4) 1-on-1 Executive Mentoring!";
+        }
+
+        // 7. METHODOLOGY & FACILITATION VS TRAINING
+        else if (lower.includes('facilitation') || lower.includes('training') || lower.includes('methodology') || lower.includes('how it works') || lower.includes('difference') || lower.includes('groarche way')) {
+          reply = "Great question! Unlike passive training lectures where people just sit and listen, GroArche uses Experiential Facilitation — active simulations, guided reflection, and group wisdom harvesting so participants translate breakthrough insights into real workplace habits!";
+        }
+
+        // 8. FOUNDER ANUTOSH GHOSH & CREDENTIALS
+        else if (
+          lower.includes('anutosh') || lower.includes('founder') || lower.includes('who is') || lower.includes('director') || 
+          lower.includes('experience') || lower.includes('background') || lower.includes('credentials') || lower.includes('dtm') || lower.includes('cftp')
+        ) {
+          reply = "Anutosh Ghosh is the Founder & Director of GroArche! He is a Certified Facili-Trainer (CFTP), Distinguished Toastmaster (DTM), and Executive Mentor with 16+ years leading teams at Wipro & Deloitte. His philosophy: 'Learning is not measured by what is taught, but by what changes.' 💡";
+        }
+
+        // 9. LOCATION, ADDRESS & OFFICE
+        else if (lower.includes('location') || lower.includes('where are you') || lower.includes('address') || lower.includes('office') || lower.includes('kolkata') || lower.includes('located') || lower.includes('where is')) {
+          reply = "GroArche Learning Solutions is based in Kolkata, West Bengal, India! Address: R/AA-28, Purbapally, Raghunathpur, Kolkata 700059. We deliver physical in-person workshops across India as well as global virtual interventions! 📍";
+        }
+
+        // 10. CONTACT & PHONE / WHATSAPP / EMAIL
+        else if (lower.includes('contact') || lower.includes('phone') || lower.includes('whatsapp') || lower.includes('email') || lower.includes('reach') || lower.includes('call') || lower.includes('talk') || lower.includes('number')) {
+          reply = "You can connect directly with GroArche Learning Solutions via WhatsApp or Call at +91 98366 95655 or email contact@groarche.pro! You can also check out Founder Anutosh on Instagram @anughosh85! 📲";
+        }
+
+        // 11. CLIENTS, PARTNERS, TRACK RECORD & TESTIMONIALS
+        else if (lower.includes('client') || lower.includes('partner') || lower.includes('companies') || lower.includes('organizations') || lower.includes('colleges') || lower.includes('institutions') || lower.includes('track record') || lower.includes('testimonials')) {
+          reply = "GroArche has impacted 4,000+ lives across 16+ organizations and 6 academic institutions! Corporate partners include ACH & Associates and Bhuwania & Associates. Academic partners include MSIT (Meghnad Saha Inst. of Tech), Loreto Convent Entally, and Loreto House! 🌟";
+        }
+
+        // 12. LEADERSHIP & EXECUTIVE PRESENCE
+        else if (lower.includes('leadership') || lower.includes('executive') || lower.includes('presence') || lower.includes('eq') || lower.includes('manager') || lower.includes('emotional intelligence')) {
+          reply = "Our Leadership Effectiveness journeys focus on executive presence, emotional intelligence (EQ), strategic vision, conflict de-escalation, and high-impact communication. Led by Founder Anutosh Ghosh (16+ yrs corporate background). We move leaders from theory into real behavioral execution! 🚀";
+        }
+
+        // 13. STUDENTS & CAREER READINESS
+        else if (lower.includes('student') || lower.includes('career') || lower.includes('interview') || lower.includes('placement') || lower.includes('college') || lower.includes('campus') || lower.includes('resume') || lower.includes('gd')) {
+          reply = "Our Campus-to-Corporate readiness modules empower final-year engineering students & graduates with placement readiness, mock interview simulations, Group Discussion (GD) mastery, articulation confidence, and workplace etiquette! 🎯";
+        }
+
+        // 14. CORPORATE TEAM WORKSHOPS
+        else if (lower.includes('corporate') || lower.includes('team') || lower.includes('synergy') || lower.includes('company') || lower.includes('firm') || lower.includes('silos')) {
+          reply = "We partner with corporate enterprises across IT, Healthcare, Consulting, and Banking to eliminate silos, improve customer satisfaction, and build high-trust, collaborative team dynamics! 🤝";
+        }
+
+        // 15. PRICING / BOOKING / CUSTOM PROPOSALS / UNKNOWN QUERIES -> START DETAIL COLLECTION & CAPTURE QUERY!
+        else {
+          chatLeadStep = 1;
+          chatLeadData.visitorQuery = text; // STORE ORIGINAL UNANSWERED VISITOR QUESTION!
+          input.placeholder = "Type or speak your Full Name...";
+          reply = "Ooh, that's a fantastic question! To connect you directly with the exact tailored details for your team, may I know your Full Name? 😊";
+        }
+
+        speakBotResponse(reply);
+        container.innerHTML += `<div class="p-3 rounded-2xl bg-[#0b0f19] border border-slate-800 text-slate-200 leading-relaxed"><p>${reply}</p></div>`;
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+
+    // Initialize Rich 3D WebGL Background Scene (Continuous Animation Across Whole Page)
+    (function init3D() {
+      const canvas = document.getElementById('global3dCanvas');
+      const scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x060911, 0.02);
+
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 18;
+
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+      scene.add(ambientLight);
+
+      const mainGoldLight = new THREE.PointLight(0xd4af37, 6, 80);
+      mainGoldLight.position.set(0, 0, 10);
+      scene.add(mainGoldLight);
+
+      // 3D Kinetic Sculpture Outer Frame
+      const octaGeo = new THREE.OctahedronGeometry(3.6, 0);
+      const octaMat = new THREE.MeshStandardMaterial({ color: 0xd4af37, wireframe: true, transparent: true, opacity: 0.55 });
+      const octaMesh = new THREE.Mesh(octaGeo, octaMat);
+      scene.add(octaMesh);
+
+      // Particle Cloud Floating Across Entire Space
+      const particles = 600;
+      const geo = new THREE.BufferGeometry();
+      const pos = new Float32Array(particles * 3);
+      for(let i=0; i<particles*3; i++) {
+        pos[i] = (Math.random() - 0.5) * 40;
+      }
+      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      const mat = new THREE.PointsMaterial({ color: 0xd4af37, size: 0.18, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending });
+      const system = new THREE.Points(geo, mat);
+      scene.add(system);
+
+      let mouseX = 0, mouseY = 0;
+      window.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX - window.innerWidth / 2) * 0.0014;
+        mouseY = (e.clientY - window.innerHeight / 2) * 0.0014;
+      });
+
+      function animate() {
+        requestAnimationFrame(animate);
+        octaMesh.rotation.y += 0.005;
+        octaMesh.rotation.x += 0.003;
+        system.rotation.y += 0.0012;
+
+        const scrollY = window.scrollY;
+        const zOffset = Math.min(scrollY * 0.008, 10);
+
+        camera.position.x += (mouseX * 6 - camera.position.x) * 0.05;
+        camera.position.y += (-mouseY * 6 - camera.position.y) * 0.05;
+        camera.position.z = 18 - zOffset;
+        camera.lookAt(0,0,0);
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    })();
+  </script>
+</body>
+</html>
